@@ -1,7 +1,7 @@
 body {
     display: flex;
-    flex-direction: column;
-    align-items: center;
+    flex-direction: row;
+    align-items: flex-start;
     justify-content: center;
     height: 100vh;
     margin: 0;
@@ -13,5 +13,27 @@ body {
 canvas {
     background: #111;
     border: 2px solid #fff;
-    margin-top: 20px;
+    margin: 20px;
 } 
+
+#settingsPanel {
+    width: 260px;
+    margin: 20px;
+    padding: 16px;
+    background: #1a1a1a;
+    border: 1px solid #444;
+    border-radius: 8px;
+}
+
+#settingsPanel h2 {
+    margin: 0 0 12px 0;
+    font-size: 20px;
+}
+
+.setting {
+    margin-bottom: 14px;
+}
+
+input[type="range"] {
+    width: 100%;
+}

@@ -11,7 +11,7 @@ let score = 0;
 let gameStarted = false;
 
 // --- Smooth movement timing ---
-const tickIntervalMs = 100; // logical update rate (ms per grid step)
+let tickIntervalMs = 100; // logical update rate (ms per grid step)
 let lastTickTime = 0; // timestamp of last completed tick
 let snakePrev = [];
 
@@ -42,6 +42,7 @@ function getInterpolatedSegment(index, t) {
 
 // --- Sound effects (Web Audio API) ---
 let audioContext = null;
+let soundEnabled = true;
 
 function getAudioContext() {
     if (!audioContext) {
@@ -57,6 +58,7 @@ function getAudioContext() {
 
 function playTone(frequency, durationMs, type = 'sine', volume = 0.08) {
     try {
+        if (!soundEnabled) return;
         const ctx = getAudioContext();
         const oscillator = ctx.createOscillator();
         const gain = ctx.createGain();
@@ -314,6 +316,34 @@ document.addEventListener('keydown', e => {
             if (direction.x === -1) break;
             direction = { x: 1, y: 0 };
             break;
+    }
+});
+
+// --- Settings panel wiring ---
+window.addEventListener('DOMContentLoaded', () => {
+    const soundToggle = document.getElementById('soundToggle');
+    const speedSlider = document.getElementById('speedSlider');
+    const speedValue = document.getElementById('speedValue');
+
+    if (soundToggle) {
+        soundToggle.checked = soundEnabled;
+        soundToggle.addEventListener('change', () => {
+            soundEnabled = soundToggle.checked;
+            if (soundEnabled) ensureAudioUnlocked();
+        });
+    }
+
+    if (speedSlider && speedValue) {
+        // Initialize display
+        speedSlider.value = String(tickIntervalMs);
+        speedValue.textContent = String(tickIntervalMs);
+        speedSlider.addEventListener('input', () => {
+            const newVal = parseInt(speedSlider.value, 10);
+            if (!Number.isNaN(newVal) && newVal >= 50 && newVal <= 300) {
+                tickIntervalMs = newVal;
+                speedValue.textContent = String(newVal);
+            }
+        });
     }
 });
 
